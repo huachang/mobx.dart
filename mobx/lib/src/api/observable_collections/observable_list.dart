@@ -387,6 +387,31 @@ class ObservableList<T>
       }
     }, _atom);
   }
+  
+  /// Swap two elements in the list
+  void swap(int idx1, int idx2) {
+    _context.conditionallyRunInAction(() {
+      if (_list.isNotEmpty) {
+        var len = _list.length;
+        if (idx1 != idx2 &&
+            len > idx1 &&
+            len > idx2 &&
+            idx1 >= 0 &&
+            idx2 >= 0) {
+          final temp = _list[idx1];
+          _list[idx1] = _list[idx2];
+          _list[idx2] = temp;
+        }
+        final changes = <ElementChange<T>>[];
+        changes.add(ElementChange(
+            index: idx1, oldValue: _list[idx2], newValue: _list[idx1]));
+        changes.add(ElementChange(
+            index: idx2, oldValue: _list[idx1], newValue: _list[idx2]));
+        _notifyElementsUpdate(changes);
+      }
+    }, _atom);
+  }
+
 
   @override
   void sort([int Function(T a, T b)? compare]) {
